@@ -20,7 +20,7 @@ Example of stateless gen_server mock
 								{reply, X}.
 
 				test_code() ->
-        42 = code_under_test(emock:gen_server(fun echo_server/2), 42).
+				42 = code_under_test(emock:gen_server(fun echo_server/2), 42).
 </pre>
 
 This demostrates the creation of a very simple gen_server that echoes every messages sent to it using @gen_server:call()@.
