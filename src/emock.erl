@@ -6,7 +6,7 @@
 
 gen_server(Fun) when is_function(Fun, 2) ->
 	spawn_link(fun () -> gen_server0(Fun) end).
-gen_server(Fun, InitialState) when is_function(Fun, 3) ->
+gen_server(Fun, InitialState) when is_function(Fun, 2) ->
 	spawn_link(fun () -> gen_server0(Fun, InitialState) end).
 
 gen_server0(Fun) ->
@@ -45,7 +45,7 @@ gen_server0(Fun, State) ->
 			
 gen_fsm(Fun) when is_function(Fun, 2) ->
 	spawn_link(fun () -> gen_fsm0(Fun) end).
-gen_fsm(Fun, InitialState) when is_function(Fun, 3) ->
+gen_fsm(Fun, InitialState) when is_function(Fun, 2) ->
 	spawn_link(fun () -> gen_fsm0(Fun, InitialState) end).
 
 
