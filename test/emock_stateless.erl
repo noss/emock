@@ -1,4 +1,4 @@
--module(emock_test).
+-module(emock_stateless).
 
 -compile(export_all).
 
