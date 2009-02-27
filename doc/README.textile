@@ -1,0 +1,54 @@
+Quick and useful mocking of OTP gen_services
+--------------------------------------------
+
+This is a surprisingly simple library for hiding away some internal details of how gen_server and gen_fsm messaging works. To make your test case setup as quick and succinct as possible.
+
+Example of stateless gen_server mock
+--------------------------
+
+<pre>
+				-module(emock_test).
+				-compile(export_all).
+
+				code_under_test(Server, X) ->
+								%% horribly complex code here,
+								Reply = gen_server:call(Server, X),
+								%% more horribly complex code here
+								Reply.
+
+				echo_server(call, X) ->
+								{reply, X}.
+
+				test_code() ->
+        42 = code_under_test(emock:gen_server(fun echo_server/2), 42).
+</pre>
+
+This demostrates the creation of a very simple gen_server that echoes every messages sent to it using @gen_server:call()@.
+
+The fun can return either @{reply, X}@ or @no_reply@.
+
+Example of stateful gen_server mock
+------------------------
+
+<pre>
+				-module(emock_stateful).
+
+				-compile(export_all).
+
+				counter_server({call, Count}, {add, Add}) ->
+								NewCount = Count + Add,
+								{reply, NewCount, NewCount}.
+
+				test_code() ->
+								Server = emock:gen_server(fun counter_server/2, 0),
+								1 = gen_server:call(Server, {add, 1}),
+								2 = gen_server:call(Server, {add, 1}),
+								3 = gen_server:call(Server, {add, 1}),
+								10 = gen_server:call(Server, {add, 7}),
+								ok.
+</pre>
+
+This code uses the ability to have a state-variable that is updated after each function call, here implementing a server that adds to the counter and returns the new value of the counter.
+
+The fun can return either @{reply, X, NewState}@ or @{no_reply, NewState}@.
+
