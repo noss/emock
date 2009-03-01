@@ -3,6 +3,7 @@
 
 -export([gen_server/1, gen_server/2]).
 -export([gen_fsm/1, gen_fsm/2]).
+-export([supervisor/1]).
 
 gen_server(Fun) when is_function(Fun, 2) ->
 	spawn_link(fun () -> gen_server0(Fun) end).
@@ -103,5 +104,15 @@ gen_fsm0(Fun, State) ->
 			gen_fsm0(Fun, NewState)
 	end.
 	
-		
+supervisor(Fun) when is_function(Fun, 2) ->
+    %% Translate args. The supervisor is really a gen_server.
+    Map =
+	fun 
+	    (call, {start_child, Spec}) ->
+		Fun(start_child, Spec);
+	    (call, {terminate_child, Id}) ->
+		Fun(terminate_child, Id)
+	end,
+    gen_server(Map).
+
 
