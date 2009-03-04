@@ -1,0 +1,3 @@
+{logdir, "@PATH@/etc/log"}.
+{alias, emock, "@PATH@"}.
+{suites, emock, [emock_SUITE]}.
