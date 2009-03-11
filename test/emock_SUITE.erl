@@ -3,6 +3,7 @@
 
 all() ->
     [
+     stateless_supervisor,
      stateful_server,
      stateless_server,
      stateless_server_noreply,
@@ -73,3 +74,22 @@ stateful_server(_) ->
     ok.
 
     
+sup_dummy() ->
+    fun 
+	(start_child, Spec) ->
+	    {reply, Spec};
+	(terminate_child, Id) ->
+	    {reply, Id}
+    end.
+
+stateless_supervisor(_) ->
+    Mock = emock:supervisor(sup_dummy()),
+    
+    1 = supervisor:start_child(Mock, 1),
+    1 = supervisor:terminate_child(Mock, 1),
+    
+    erlang:exit(Mock, normal),
+    
+    ok.
+
+
